@@ -16,8 +16,10 @@ trait ScalaCollectionsBenchmark extends OnlineRegressionReport {
     exec.jvmflags -> List("-server", "-Xms1024m", "-Xmx2048m", "-XX:+UseG1GC")
   )
 
-  val bigGen    = Gen.range("size")(16, 9016,  3000).map(size => 0 to size )
-  val sqrtGen   = bigGen.map(_.map(math.sqrt(_).toInt))
+  val generator = Gen.range("size")(16, 9016,  3000)
+
+  val bigGen    = generator.map(size => 0 to size )
+  val sqrtGen   = generator.map(size => 0 to math.sqrt(size).toInt )
 
   def buildHashMap      (c: IndexedSeq[(Int,Int)])    = HashMap.newBuilder[Int,Int] .++=(c).result()
   def buildListMap      (c: IndexedSeq[(Int,Int)])    = ListMap.newBuilder[Int,Int] .++=(c).result()
