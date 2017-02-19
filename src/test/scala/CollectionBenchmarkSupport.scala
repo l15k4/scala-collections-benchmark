@@ -10,6 +10,7 @@ object all extends AddBench with AppendBench with PrependBench with BuildBench w
 trait CollectionBenchmarkSupport extends OnlineRegressionReport {
 
   config(
+    reports.resultDir -> "target/benchmarks/report/scala-collections-benchmark/results", // compatible with github pages
     exec.benchRuns -> 2,
     exec.maxWarmupRuns -> 1,
     exec.independentSamples -> 1,
