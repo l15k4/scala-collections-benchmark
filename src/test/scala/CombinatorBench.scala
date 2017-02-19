@@ -4,9 +4,10 @@ import org.scalameter.{Bench => _, Executor => _}
 
 import scala.collection.immutable.IndexedSeq
 
-object TransformBench extends ScalaCollectionsBenchmark {
+trait CombinatorBench extends CollectionBenchmarkSupport {
+  import CollectionBenchmarkSupport._
 
-  def transformBench[C <: IndexedSeq[Int]](gen: Gen[C], fn: Traversable[Int] => Any, fnI: Iterator[Int] => Any, fnArr: Array[Int] => Any, fnM: Traversable[(Int, Int)] => Any,fnMI: Iterator[(Int, Int)] => Any, name: String) = {
+  private def bench[C <: IndexedSeq[Int]](gen: Gen[C], fn: Traversable[Int] => Any, fnI: Iterator[Int] => Any, fnArr: Array[Int] => Any, fnM: Traversable[(Int, Int)] => Any, fnMI: Iterator[(Int, Int)] => Any, name: String) = {
     performance of name in {
       performance of "HashMap"          in using(gen.map(c => buildHashMap(c.zipWithIndex)))                .in(fnM)
       performance of "ListMap"          in using(gen.map(c => buildListMap(c.zipWithIndex)))                .in(fnM)
@@ -26,25 +27,22 @@ object TransformBench extends ScalaCollectionsBenchmark {
     }
   }
 
-  transformBench(bigGen,  _.size,                       _.size,                       _.length,                     _.size,                                 _.size,
+  bench(bigGen,  _.size,                        _.size,                                 _.length,                     _.size,                                 _.size,
     "size"
   )
-  transformBench(bigGen,  _.map(identity),              _.map(identity),              _.map(identity),              _.map(identity),                        _.map(identity),
+  bench(bigGen,  _.map(identity),               _.map(identity).emptyForce,             _.map(identity),              _.map(identity),                        _.map(identity).emptyForce,
     "map identity"
   )
-  transformBench(bigGen,  _.filter(_ => true),          _.filter(_ => true),          _.filter(_ => true),          _.filter(_ => true),                    _.filter(_ => true),
+  bench(bigGen,  _.filter(_ => true),           _.filter(_ => true).emptyForce,         _.filter(_ => true),          _.filter(_ => true),                    _.filter(_ => true).emptyForce,
     "filter (all true)"
   )
-  transformBench(bigGen,  _.partition(_ % 2 == 0),      _.partition(_ % 2 == 0),      _.partition(_ % 2 == 0),      _.partition(_._2 % 2 == 0),             _.partition(_._2 % 2 == 0),
-    "partition (50/50)"
-  )
-  transformBench(bigGen,  _.foldLeft(0)(_ - _),         _.foldLeft(0)(_ - _),         _.foldLeft(0)(_ - _),         _.foldLeft(0)((x, y) => y._1 - y._2),   _.foldLeft(0)((x, y) => y._1 - y._2),
+  bench(bigGen,  _.foldLeft(0)(_ - _),          _.foldLeft(0)(_ - _),                   _.foldLeft(0)(_ - _),         _.foldLeft(0)((x, y) => y._1 - y._2),   _.foldLeft(0)((x, y) => y._1 - y._2),
     "foldLeft from 0 with subtraction"
   )
-  transformBench(sqrtGen,  c => c.flatMap(_ => c),       c => c.flatMap(_ => c),       c => c.flatMap(_ => c),       c => c.flatMap(_ => c),                 c => c.flatMap(_ => c),
+  bench(sqrtGen, c => c.flatMap(_ => c),        c => c.flatMap(_ => c).emptyForce,      c => c.flatMap(_ => c),       c => c.flatMap(_ => c),                 c => c.flatMap(_ => c).emptyForce,
     "flatMap - generate C[Int] of size=sqrt(total) and flatMap itself"
   )
-  transformBench(sqrtGen,  c => c.map(_ => c).flatten,   c => c.map(_ => c).flatten,   c => c.map(_ => c).flatten,   c => c.map(_ => c).flatten,             c => c.map(_ => c).flatten,
+  bench(sqrtGen, c => c.map(_ => c).flatten,    c => c.map(_ => c).flatten.emptyForce,  c => c.map(_ => c).flatten,   c => c.map(_ => c).flatten,             c => c.map(_ => c).flatten.emptyForce,
     "flatten - generate C[Int] of size=sqrt(total) and map itself and flatten"
   )
 

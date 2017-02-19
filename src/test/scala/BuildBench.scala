@@ -4,9 +4,9 @@ import org.scalameter.{Bench => _, Executor => _}
 
 import scala.collection.immutable.Range.Inclusive
 
-object BuildBench extends ScalaCollectionsBenchmark {
+trait BuildBench extends CollectionBenchmarkSupport {
 
-  def buildBench(gen: Gen[Inclusive]) = {
+  private def bench(gen: Gen[Inclusive]) = {
     performance of "Build by C.newBuilder" in {
       performance of "HashMap"          in using(gen.map(_.zipWithIndex))                                 .in(buildHashMap)
       performance of "ListMap"          in using(gen.map(_.zipWithIndex))                                 .in(buildListMap)
@@ -22,6 +22,6 @@ object BuildBench extends ScalaCollectionsBenchmark {
     }
   }
 
-  buildBench(bigGen)
+  bench(bigGen)
 
 }

@@ -5,8 +5,9 @@ import org.scalameter.{Executor => _, Gen => _, _}
 import scala.collection.immutable.{HashSet, LongMap, TreeSet, Vector, _}
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
-trait ScalaCollectionsBenchmark extends OnlineRegressionReport {
-  override def measurer = new Executor.Measurer.Default
+object all extends AddBench with AppendBench with PrependBench with BuildBench with CombinatorBench with ConcatBench
+
+trait CollectionBenchmarkSupport extends OnlineRegressionReport {
 
   config(
     exec.benchRuns -> 2,
@@ -33,4 +34,10 @@ trait ScalaCollectionsBenchmark extends OnlineRegressionReport {
   def buildListBuffer   (c: IndexedSeq[Int])          = ListBuffer.newBuilder[Int]  .++=(c).result()
   def buildArrayBuffer  (c: IndexedSeq[Int])          = ArrayBuffer.newBuilder[Int] .++=(c).result()
 
+}
+
+object CollectionBenchmarkSupport {
+  implicit class IteratorPimp[T](underlying: Iterator[T]) {
+    def emptyForce = while (underlying.hasNext) underlying.next
+  }
 }

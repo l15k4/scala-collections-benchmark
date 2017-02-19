@@ -6,7 +6,7 @@ import scala.collection.immutable.Range.Inclusive
 import scala.collection.immutable.{IndexedSeq, List, Vector}
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
-object AppendBench extends ScalaCollectionsBenchmark {
+trait AppendBench extends CollectionBenchmarkSupport {
   def appendSeq(empty: Seq[Int], c: IndexedSeq[Int]) = c.foldLeft(empty) { case (acc, e) => acc :+ e }
 
   def appendList        (c: IndexedSeq[Int]) = appendSeq(List.empty[Int], c)
@@ -15,7 +15,7 @@ object AppendBench extends ScalaCollectionsBenchmark {
   def appendArrayBuffer (c: IndexedSeq[Int]) = appendSeq(ArrayBuffer.empty[Int], c)
   def appendArray       (c: IndexedSeq[Int]) = c.foldLeft(Array.empty[Int]) { case (acc, e) => acc :+ e }
 
-  def appendBench(gen: Gen[Inclusive]) = {
+  private def bench(gen: Gen[Inclusive]) = {
     performance of "Build by appending to C.empty" in {
       performance of "Array"        in using(gen)  .in(appendArray)
       performance of "List"         in using(gen)  .in(appendList)
@@ -25,6 +25,6 @@ object AppendBench extends ScalaCollectionsBenchmark {
     }
   }
 
-  appendBench(bigGen)
+  bench(bigGen)
 
 }
