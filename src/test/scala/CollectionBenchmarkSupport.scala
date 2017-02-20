@@ -9,14 +9,14 @@ object all extends AddBench with AppendBench with PrependBench with BuildBench w
 
 trait CollectionBenchmarkSupport extends OnlineRegressionReport {
 
-  config(
-    reports.resultDir -> "target/benchmarks/report/scala-collections-benchmark/results", // compatible with github pages
-    exec.benchRuns -> 2,
-    exec.maxWarmupRuns -> 1,
-    exec.independentSamples -> 1,
-    exec.requireGC -> false,
-    exec.jvmflags -> List("-server", "-Xms1024m", "-Xmx2048m", "-XX:+UseG1GC")
-  )
+  val cfg =
+    Seq[KeyValue](
+      reports.resultDir -> "target/benchmarks/report/scala-collections-benchmark/results", // compatible with github pages
+      exec.benchRuns -> 3,
+      exec.maxWarmupRuns -> 1,
+      exec.requireGC -> false,
+      exec.jvmflags -> List("-server", "-Xms1024m", "-Xmx2048m", "-XX:+UseG1GC")
+    )
 
   val generator = Gen.range("size")(16, 9016,  3000)
 

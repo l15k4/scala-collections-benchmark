@@ -8,7 +8,7 @@ trait CombinatorBench extends CollectionBenchmarkSupport {
   import CollectionBenchmarkSupport._
 
   private def bench[C <: IndexedSeq[Int]](gen: Gen[C], fn: Traversable[Int] => Any, fnI: Iterator[Int] => Any, fnArr: Array[Int] => Any, fnM: Traversable[(Int, Int)] => Any, fnMI: Iterator[(Int, Int)] => Any, name: String) = {
-    performance of name in {
+    performance of name config(cfg:_*) in {
       performance of "HashMap"          in using(gen.map(c => buildHashMap(c.zipWithIndex)))                .in(fnM)
       performance of "ListMap"          in using(gen.map(c => buildListMap(c.zipWithIndex)))                .in(fnM)
       performance of "TreeMap"          in using(gen.map(c => buildTreeMap(c.zipWithIndex)))                .in(fnM)

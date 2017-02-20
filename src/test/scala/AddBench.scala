@@ -18,7 +18,7 @@ trait AddBench extends CollectionBenchmarkSupport {
   private def addTreeSet        (c: IndexedSeq[Int])          = addSet(TreeSet.empty, c)
 
   private def bench(gen: Gen[Inclusive]) = {
-    performance of "Build by adding elements from C.empty" in {
+    performance of "Build by adding elements from C.empty" config(cfg:_*) in {
       performance of "HashMap"  in using(gen.map(_.zipWithIndex)) .in(addHashMap)
       performance of "ListMap"  in using(gen.map(_.zipWithIndex)) .in(addListMap)
       performance of "TreeMap"  in using(gen.map(_.zipWithIndex)) .in(addTreeMap)

@@ -7,7 +7,7 @@ import scala.collection.immutable.Range.Inclusive
 trait BuildBench extends CollectionBenchmarkSupport {
 
   private def bench(gen: Gen[Inclusive]) = {
-    performance of "Build by C.newBuilder" in {
+    performance of "Build by C.newBuilder" config(cfg:_*) in {
       performance of "HashMap"          in using(gen.map(_.zipWithIndex))                                 .in(buildHashMap)
       performance of "ListMap"          in using(gen.map(_.zipWithIndex))                                 .in(buildListMap)
       performance of "TreeMap"          in using(gen.map(_.zipWithIndex))                                 .in(buildTreeMap)

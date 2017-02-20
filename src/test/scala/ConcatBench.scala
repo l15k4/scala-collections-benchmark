@@ -11,7 +11,7 @@ trait ConcatBench extends CollectionBenchmarkSupport {
   private def concatArray     (c: Seq[Array[Int]])                  = c.reduce(_ ++ _)
 
   private def bench(gen: Gen[Inclusive]) = {
-    performance of "Build by concatenating C.++ (total C.size equals to other benchmarks)" in {
+    performance of "Build by concatenating C.++ (total C.size equals to other benchmarks)" config(cfg:_*) in {
       performance of "HashMap"          in using(gen.map(_.map(size => buildHashMap((0 to size).zipWithIndex))))                                .in(concatMap)
       performance of "ListMap"          in using(gen.map(_.map(size => buildListMap((0 to size).zipWithIndex))))                                .in(concatMap)
       performance of "TreeMap"          in using(gen.map(_.map(size => buildTreeMap((0 to size).zipWithIndex))))                                .in(concatMap)

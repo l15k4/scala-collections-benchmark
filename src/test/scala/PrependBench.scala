@@ -17,7 +17,7 @@ trait PrependBench extends CollectionBenchmarkSupport {
   private def prependArray      (c: IndexedSeq[Int]) = c.foldLeft(Array.empty[Int]) { case (acc, e) => e +: acc }
 
   private def bench(gen: Gen[Inclusive]) = {
-    performance of "Build by prepending to C.empty" in {
+    performance of "Build by prepending to C.empty" config(cfg:_*) in {
       performance of "Array"        in using(gen)  .in(prependArray)
       performance of "List"         in using(gen)  .in(prependList)
       performance of "Vector"       in using(gen)  .in(prependVector)

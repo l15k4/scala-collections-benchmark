@@ -16,7 +16,7 @@ trait AppendBench extends CollectionBenchmarkSupport {
   def appendArray       (c: IndexedSeq[Int]) = c.foldLeft(Array.empty[Int]) { case (acc, e) => acc :+ e }
 
   private def bench(gen: Gen[Inclusive]) = {
-    performance of "Build by appending to C.empty" in {
+    performance of "Build by appending to C.empty" config(cfg:_*) in {
       performance of "Array"        in using(gen)  .in(appendArray)
       performance of "List"         in using(gen)  .in(appendList)
       performance of "Vector"       in using(gen)  .in(appendVector)
