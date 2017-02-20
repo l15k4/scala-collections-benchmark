@@ -11,7 +11,6 @@ trait CollectionBenchmarkSupport extends OnlineRegressionReport {
 
   val cfg =
     Seq[KeyValue](
-      reports.resultDir -> "target/benchmarks/report/scala-collections-benchmark/results", // compatible with github pages
       exec.benchRuns -> 3,
       exec.maxWarmupRuns -> 1,
       exec.requireGC -> false,
