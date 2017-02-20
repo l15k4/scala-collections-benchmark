@@ -4,16 +4,18 @@ import org.scalameter.{Bench => _, Executor => _}
 
 import scala.collection.immutable.Range.Inclusive
 import scala.collection.immutable.{IndexedSeq, List, Vector}
+import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
 trait PrependBench extends CollectionBenchmarkSupport {
 
-  private def prependSeq(empty: Seq[Int], c: IndexedSeq[Int]) = c.foldLeft(empty) { case (acc, e) => e +: acc }
+  private def prependSeq    (empty: Seq[Int], c: IndexedSeq[Int])             = c.foldLeft(empty) { case (acc, e) => e +: acc }
+  private def prependBuffer (empty: mutable.Buffer[Int], c: IndexedSeq[Int])  = c.foldLeft(empty) { case (acc, e) => e +=: acc }
 
   private def prependList       (c: IndexedSeq[Int]) = prependSeq(List.empty[Int], c)
   private def prependVector     (c: IndexedSeq[Int]) = prependSeq(Vector.empty[Int], c)
-  private def prependListBuffer (c: IndexedSeq[Int]) = prependSeq(ListBuffer.empty[Int], c)
-  private def prependArrayBuffer(c: IndexedSeq[Int]) = prependSeq(ArrayBuffer.empty[Int], c)
+  private def prependListBuffer (c: IndexedSeq[Int]) = prependBuffer(ListBuffer.empty[Int], c)
+  private def prependArrayBuffer(c: IndexedSeq[Int]) = prependBuffer(ArrayBuffer.empty[Int], c)
   private def prependArray      (c: IndexedSeq[Int]) = c.foldLeft(Array.empty[Int]) { case (acc, e) => e +: acc }
 
   private def bench(gen: Gen[Inclusive]) = {
