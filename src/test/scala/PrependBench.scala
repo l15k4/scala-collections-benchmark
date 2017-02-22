@@ -17,6 +17,8 @@ trait PrependBench extends CollectionBenchmarkSupport {
   private def prependListBuffer (c: IndexedSeq[Int]) = prependBuffer(ListBuffer.empty[Int], c)
   private def prependArrayBuffer(c: IndexedSeq[Int]) = prependBuffer(ArrayBuffer.empty[Int], c)
   private def prependArray      (c: IndexedSeq[Int]) = c.foldLeft(Array.empty[Int]) { case (acc, e) => e +: acc }
+  private def prependArraySeq   (c: IndexedSeq[Int]) = prependSeq(mutable.ArraySeq.empty[Int], c)
+  private def prependArrayStack (c: IndexedSeq[Int]) = prependSeq(mutable.ArrayStack.empty, c)
 
   private def bench(gen: Gen[Inclusive]) = {
     performance of "Build by prepending to C.empty" config(cfg:_*) in {
@@ -25,6 +27,8 @@ trait PrependBench extends CollectionBenchmarkSupport {
       performance of "Vector"       in using(gen)  .in(prependVector)
       performance of "ListBuffer"   in using(gen)  .in(prependListBuffer)
       performance of "ArrayBuffer"  in using(gen)  .in(prependArrayBuffer)
+      performance of "ArraySeq"     in using(gen)  .in(prependArraySeq)
+      performance of "ArrayStack"   in using(gen)  .in(prependArrayStack)
     }
   }
   bench(bigGen)
